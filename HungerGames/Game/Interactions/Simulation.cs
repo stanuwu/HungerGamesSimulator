@@ -240,7 +240,7 @@ namespace HungerGames.Game.Interactions
                 {
                     BorderRadius -= 200;
                     if (BorderRadius < 200) BorderRadius = 200;
-                    foreach (var player in playerOrder)
+                    foreach (var player in roundStartPlayers)
                     {
                         if (GetZone(player) == Zone.Border)
                         {
@@ -672,9 +672,9 @@ namespace HungerGames.Game.Interactions
                 }
             }
 
-            // shuffle order
+            // shuffle order (disabled)
             ILogItem[] happeningsArray = happenings.ToArray();
-            random.Shuffle(happeningsArray);
+            // random.Shuffle(happeningsArray);
             happenings = addLast != null ? new List<ILogItem>() { addLast } : new List<ILogItem>();
             happenings.AddRange(happeningsArray);
             return happenings;

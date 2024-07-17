@@ -699,7 +699,7 @@ public partial class MainWindow : Window
 
                 LogGrid.Children.Add(entry);
 
-                cursorY += 220;
+                cursorY += 300;
             }
             else if (log[i] is EventLog evt)
             {
@@ -715,7 +715,7 @@ public partial class MainWindow : Window
                     },
                     HorizontalAlignment = HorizontalAlignment.Right,
                     VerticalAlignment = VerticalAlignment.Top,
-                    Height = 30,
+                    Height = 35,
                 };
                 Label name = new Label()
                 {
@@ -734,7 +734,7 @@ public partial class MainWindow : Window
                 };
                 entry.Children.Add(name);
                 LogGrid.Children.Add(entry);
-                cursorY += 35;
+                cursorY += 60;
             }
         }
     }
