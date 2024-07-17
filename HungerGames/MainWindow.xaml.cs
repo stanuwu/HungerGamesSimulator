@@ -208,8 +208,8 @@ public partial class MainWindow : Window
                 {
                     try
                     {
-                        Bitmap bmp = new Bitmap(dialog.FileName);
-                        Images[i1 - 1] = new Bitmap(bmp, new Size(1000, 1000));
+                        Bitmap bmp = new Bitmap(new Bitmap(dialog.FileName), new Size(1000, 1000));
+                        Images[i1 - 1] = bmp;
                         image.Source = bmp.ToBitmapSource();
                     }
                     catch (ArgumentException)
@@ -261,12 +261,18 @@ public partial class MainWindow : Window
                         MessageBox.Show("Invalid Url", "Image Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                         return;
                     }
+                    catch (NotSupportedException)
+                    {
+                        // invalid url
+                        MessageBox.Show("Invalid Url", "Image Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                        return;
+                    }
                 }
 
                 try
                 {
-                    Bitmap bmp = new Bitmap(content);
-                    Images[i1 - 1] = new Bitmap(bmp, new Size(1000, 1000));
+                    Bitmap bmp = new Bitmap(new Bitmap(content), new Size(1000, 1000));
+                    Images[i1 - 1] = bmp;
                     image.Source = bmp.ToBitmapSource();
                 }
                 catch (ArgumentException)
