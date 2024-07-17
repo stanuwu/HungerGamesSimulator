@@ -1,0 +1,141 @@
+﻿<Window x:Class="HungerGames.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:HungerGames"
+        mc:Ignorable="d"
+        Title="Hunger Games" Height="1080" Width="1920"
+        WindowState="Maximized"
+        ResizeMode="CanMinimize"
+        Background="Black">
+    <Grid>
+        <!-- Start Screen -->
+        <Grid Name="StartGrid" Visibility="Visible">
+            <Grid VerticalAlignment="Center" Height="300">
+                <Label Foreground="White" FontFamily="Calibri" FontSize="128" HorizontalAlignment="Center"
+                       VerticalAlignment="Top">
+                    Hunger Games
+                </Label>
+                <Button Name="StartButton" Foreground="White" Background="Black" BorderBrush="White"
+                        BorderThickness="2"
+                        FontFamily="Calibri" FontSize="48" HorizontalAlignment="Center" VerticalAlignment="Center"
+                        Margin="0 105 0 0" Padding="12" Cursor="Hand" Click="StartButton_OnClick">
+                    Start
+                </Button>
+                <Label Foreground="White" FontFamily="Calibri" FontSize="24" HorizontalAlignment="Center"
+                       VerticalAlignment="Bottom" MouseDown="CreditsClicked" Cursor="Hand">
+                    github.com/stanuwu
+                </Label>
+            </Grid>
+        </Grid>
+
+        <!-- Config Screen -->
+        <Grid Name="ConfigGrid" Visibility="Hidden">
+            <Label Foreground="White" FontFamily="Calibri" FontSize="64" HorizontalAlignment="Left"
+                   VerticalAlignment="Top" Margin="5 0 0 0">
+                Setup
+            </Label>
+            <Label Foreground="White" FontFamily="Calibri" FontSize="32" HorizontalAlignment="Left"
+                   VerticalAlignment="Top" Margin="10 80 0 0">
+                Player Count
+            </Label>
+            <ComboBox Name="PlayerCountCombo" FontFamily="Calibri" FontSize="24"
+                      HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20 130 0 0" Width="150"
+                      SelectedIndex="1" SelectionChanged="PlayerCountCombo_OnSelectionChanged">
+                <ComboBoxItem Background="White" Name="Pc6">6</ComboBoxItem>
+                <ComboBoxItem Background="White" Name="Pc12">12</ComboBoxItem>
+                <ComboBoxItem Background="White" Name="Pc24">24</ComboBoxItem>
+                <ComboBoxItem Background="White" Name="Pc48">48</ComboBoxItem>
+                <ComboBoxItem Background="White" Name="Pc96T4">96 (4/Team)</ComboBoxItem>
+                <ComboBoxItem Background="White" Name="Pc96T8">96 (8/Team)</ComboBoxItem>
+            </ComboBox>
+            <Label Foreground="White" FontFamily="Calibri" FontSize="32" HorizontalAlignment="Left"
+                   VerticalAlignment="Top" Margin="10 
+                   170 0 0">
+                Display Stats
+            </Label>
+            <ComboBox Name="PlayerStatCombo" FontFamily="Calibri" FontSize="24"
+                      HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20 220 0 0" Width="150"
+                      SelectedIndex="0" SelectionChanged="PlayerStatCombo_OnSelectionChanged">
+                <ComboBoxItem Background="White" Name="PsBasic">Basic</ComboBoxItem>
+                <ComboBoxItem Background="White" Name="PsAll">All</ComboBoxItem>
+                <ComboBoxItem Background="White" Name="PsNone">None</ComboBoxItem>
+            </ComboBox>
+
+            <Button Name="DoneConfigButton" Foreground="White" Background="Black" BorderBrush="White"
+                    BorderThickness="2" FontFamily="Calibri" FontSize="32" HorizontalAlignment="Left"
+                    VerticalAlignment="Bottom" Margin="20 0 0 20" Padding="12" Cursor="Hand"
+                    Click="DoneConfigButton_OnClick">
+                Done
+            </Button>
+
+            <ScrollViewer HorizontalAlignment="Right">
+                <Grid Name="PlayerSelectGrid">
+                    <!-- Dynamic -->
+                </Grid>
+            </ScrollViewer>
+        </Grid>
+
+        <!-- Match -->
+        <Grid Name="MatchGrid" Visibility="Hidden">
+            <Image Name="MapImage" Source="/HungerGames;component/assets/map.png" HorizontalAlignment="Left"
+                   VerticalAlignment="Center">
+            </Image>
+            <Label Name="RoundCounter" Foreground="White" FontFamily="Calibri" FontSize="32"
+                   HorizontalAlignment="Right"
+                   VerticalAlignment="Top" Margin="0 10 128 0">
+                Ready
+            </Label>
+            <ScrollViewer Name="LogScroll" HorizontalAlignment="Right" Margin="0 72 0 72">
+                <Grid Name="LogGrid">
+                    <!-- Dynamic -->
+                </Grid>
+            </ScrollViewer>
+
+            <Button Name="RoundNext" Foreground="White" Background="Black" BorderBrush="White" BorderThickness="2"
+                    FontFamily="Calibri" FontSize="32" HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom" Margin="0 0 150 10" Padding="4" Cursor="Hand" Click="RoundNext_OnClick">
+                Next
+            </Button>
+        </Grid>
+
+        <!-- Round Summary -->
+        <Grid Name="SummaryGrid" Visibility="Hidden">
+            <Label Name="SummaryLabel" Foreground="White" FontFamily="Calibri" FontSize="32"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Top" Margin="0 10 0 0">
+                Summary
+            </Label>
+
+            <ScrollViewer Name="SummaryScroll" Margin="0 72 0 72">
+                <Grid Name="SummaryPlayers">
+                    <!-- Dynamic -->
+                </Grid>
+            </ScrollViewer>
+
+            <Button Name="SummaryNext" Foreground="White" Background="Black" BorderBrush="White" BorderThickness="2"
+                    FontFamily="Calibri" FontSize="32" HorizontalAlignment="Center"
+                    VerticalAlignment="Bottom" Margin="0 0 0 10" Padding="4" Cursor="Hand" Click="SummaryNext_OnClick">
+                Next
+            </Button>
+        </Grid>
+
+        <!-- Match Summary -->
+        <Grid Name="EndGrid" Visibility="Hidden">
+            <Grid VerticalAlignment="Center" Height="300">
+                <Label Name="WinnerLabel" Foreground="White" FontFamily="Calibri" FontSize="96"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Top">
+                    Game Over
+                </Label>
+                <Button Name="RestartButton" Foreground="White" Background="Black" BorderBrush="White"
+                        BorderThickness="2"
+                        FontFamily="Calibri" FontSize="48" HorizontalAlignment="Center" VerticalAlignment="Center"
+                        Margin="0 105 0 0" Padding="12" Cursor="Hand" Click="RestartButton_OnClick">
+                    Again
+                </Button>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>
