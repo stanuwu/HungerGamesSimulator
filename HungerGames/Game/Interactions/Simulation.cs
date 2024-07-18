@@ -439,10 +439,10 @@ namespace HungerGames.Game.Interactions
                                             s = "s";
                                         }
 
-                                        string s2 = "is";
+                                        string s2 = "are";
                                         if (targets.Count == 1)
                                         {
-                                            s2 = "are";
+                                            s2 = "is";
                                         }
 
                                         switch (choice)
@@ -533,7 +533,7 @@ namespace HungerGames.Game.Interactions
                                                 {
                                                     $"{name} get{s} into a bloody fight with %player%.",
                                                     $"%player% attacks {name}. They fight back.",
-                                                    $" %player% ambushes {name} but {s2} able to fight back.",
+                                                    $" %player% ambushes {name} but they {s2} able to fight back.",
                                                     $"{name} attack{s} %player% but also get{s} hurt."
                                                 };
                                                 happenings.Add(new SimulationLog(playerList, text3[random.Next(0, text3.Length)]));
@@ -554,8 +554,8 @@ namespace HungerGames.Game.Interactions
                                                 string[] text5 = new[]
                                                 {
                                                     $"%player% beats {name} in a fight but spares them.",
-                                                    $"{name} catch{s3} %player% off guard but decide not to hurt %pronoun1%.",
-                                                    $"{name} find{s} %player% but dont see %pronoun1% as a threat.",
+                                                    $"{name} catch{s3} %player% off guard but decide{s} not to hurt %pronoun2%.",
+                                                    $"{name} find{s} %player% but dont see %pronoun2% as a threat.",
                                                 };
                                                 happenings.Add(new SimulationLog(playerList, text5[random.Next(0, text5.Length)]));
                                                 break;
@@ -790,7 +790,7 @@ namespace HungerGames.Game.Interactions
                                             logged[player.Id] = true;
                                             break;
                                         case 1:
-                                            string start = "%player% get pricked by a cactus.";
+                                            string start = "%player% gets pricked by a cactus.";
                                             player.Vitality -= 5;
                                             if (player.Vitality <= 0)
                                             {
