@@ -17,7 +17,7 @@
                 if (roll < 75)
                 {
                     player.Sanity -= 15;
-                    return new SimulationLog(new List<Player> { player }, "%player% thinks %pronoun1% inhaled poison and lose%pronoun5% %pronoun6% mind.");
+                    return new SimulationLog(new List<Player> { player }, "%player% thinks %pronoun1% inhaled poison and lose %pronoun6% mind.");
                 }
 
                 // rare outcome 2

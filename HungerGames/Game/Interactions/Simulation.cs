@@ -38,7 +38,7 @@ namespace HungerGames.Game.Interactions
 
         public Zone GetZone(Player player)
         {
-            if (Vector2.Distance(Vector2.Zero, player.Position) > BorderRadius) return Zone.Border;
+            if (Vector2.Distance(Vector2.Zero, player.Position) >= BorderRadius) return Zone.Border;
             if (Vector2.Distance(Vector2.Zero, player.Position) < CenterRadius) return Zone.Middle;
             if (player.Position.X > 0 && player.Position.X > Math.Abs(player.Position.Y)) return Zone.Swamp;
             if (player.Position.X < 0 && -player.Position.X > Math.Abs(player.Position.Y)) return Zone.Desert;
@@ -100,7 +100,7 @@ namespace HungerGames.Game.Interactions
 
                 // decide if nearby players are targets
                 List<Player> nearby = random.Next(0, 2) == 0 ? GetNearby(player, 300, 75) : new List<Player>();
-                int speed = random.Next(25, 150);
+                int speed = random.Next(50, 225);
                 bool love = false;
                 int loveNum = 100;
                 Player? lovePlayer = null;
@@ -166,18 +166,20 @@ namespace HungerGames.Game.Interactions
                     if (newZone == Zone.Border && player.Recklessness < 100 && player.Sanity > 50)
                     {
                         player.Position -= direction * speed;
+                        newZone = zone;
+                    }
+
+                    if (newZone == Zone.Border)
+                    {
+                        actions[player.Id] = "%player% tries to escape the border.";
+                        player.Alive = false;
+                        player.Vitality = 0;
                         continue;
                     }
 
                     if (zone != newZone)
                     {
-                        if (newZone == Zone.Border)
-                        {
-                            actions[player.Id] = "%player% tries to escape the border.";
-                            player.Alive = false;
-                            player.Vitality = 0;
-                        }
-                        else actions[player.Id] = $"%player% moves into the {newZone.ToString().ToLower()}.";
+                        actions[player.Id] = $"%player% moves into the {newZone.ToString().ToLower()}.";
                     }
                     else
                     {
@@ -319,12 +321,13 @@ namespace HungerGames.Game.Interactions
                 foreach (var player in playerOrder)
                 {
                     if (logged.ContainsKey(player.Id) && logged[player.Id]) continue;
-                    int eventType = random.Next(0, 5);
+                    int eventType = random.Next(0, 7);
 
                     switch (eventType)
                     {
                         // use item
                         case 0:
+                        case 1:
                             List<Item> available = player.Items.Where(item =>
                             {
                                 if (player.Personality == Personality.Crazy) return true;
@@ -349,13 +352,13 @@ namespace HungerGames.Game.Interactions
 
                             break;
                         // interact
-                        case 1:
+                        case 2:
                             next1:
                             int roll = random.Next(0, 100);
                             // aggro
                             if (roll < player.Aggression)
                             {
-                                List<Player> nearby = GetNearby(player, 300).Where(p => player.GetAttitude(p) < 100).ToList();
+                                List<Player> nearby = GetNearby(player, 200).Where(p => player.GetAttitude(p) < 100).ToList();
                                 if (nearby.Count < 1)
                                 {
                                     if (random.Next(0, 2) == 0)
@@ -482,7 +485,7 @@ namespace HungerGames.Game.Interactions
                             // nice
                             else
                             {
-                                List<Player> nearby = GetNearby(player, 300).Where(p => player.GetAttitude(p) > 75).ToList();
+                                List<Player> nearby = GetNearby(player, 200).Where(p => player.GetAttitude(p) > 75).ToList();
                                 if (nearby.Count < 1)
                                 {
                                     if (random.Next(0, 2) == 0)
@@ -569,7 +572,8 @@ namespace HungerGames.Game.Interactions
 
                             break;
                         // random event
-                        case 2:
+                        case 3:
+                        case 4:
                             next2:
                             LocalEvent localEvent = LocalEvent.Events[random.Next(0, LocalEvent.Events.Count)];
                             SimulationLog? res = localEvent.Run(player);
@@ -582,7 +586,7 @@ namespace HungerGames.Game.Interactions
 
                             break;
                         // zone event
-                        case 3:
+                        case 5:
                             switch (GetZone(player))
                             {
                                 case Zone.Middle:
@@ -625,7 +629,7 @@ namespace HungerGames.Game.Interactions
 
                             break;
                         // no event
-                        case 4:
+                        case 6:
 
                             break;
                     }

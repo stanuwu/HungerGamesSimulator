@@ -313,6 +313,11 @@ public partial class MainWindow : Window
                 Name = "PgThey",
                 Content = "they/them",
             };
+            ComboBoxItem item4 = new ComboBoxItem()
+            {
+                Name = "PgIt",
+                Content = "it/it",
+            };
             ComboBox personality = new ComboBox()
             {
                 Name = $"Player{i}Gender",
@@ -343,6 +348,7 @@ public partial class MainWindow : Window
             gender.Items.Add(item1);
             gender.Items.Add(item2);
             gender.Items.Add(item3);
+            gender.Items.Add(item4);
             player.Children.Add(name);
             player.Children.Add(image);
             player.Children.Add(button1);
