@@ -16,8 +16,12 @@
             new Item("Explosives", "%player% blows up %victim%.", 200, -10, 0, -30),
             new Item("the Bible", "%player% reads the bible to %victim%.", 0, 0, 0, 50, positive: true),
             new Item("Painkillers", "%player% takes a painkiller.", 0, 15, 15, -10, false, true),
-            new Item("Beer", "%player% cracks a cold one.", 5, -10, -10, -10, false, true),
+            new Item("a Beer", "%player% cracks a cold one.", 5, -10, -10, -10, false, true),
             new Item("Matches", "%player% lights a fire.", 0, 5, 0, 10, false, true),
+            new Item("an Energy Bar", "%player% eats an energy bar.", 0, 15, 5, 0, false, true),
+            new Item("Cigarettes", "%player% smokes.", 0, -10, -5, 15, false, true),
+            new Item("an Instrument", "%player% plays some music for %victim%.", 0, 0, 0, 15, positive: true),
+            new Item("a Mace", "%player% clubs %victim% with a mace.", 70, 0, 0, -5),
         };
 
         public Item(string name, string usage, int damage, int stamina, int health, int sanity, bool canShare = true, bool positive = false)

@@ -169,14 +169,6 @@ namespace HungerGames.Game.Interactions
                         newZone = zone;
                     }
 
-                    if (newZone == Zone.Border)
-                    {
-                        actions[player.Id] = "%player% tries to escape the border.";
-                        player.Alive = false;
-                        player.Vitality = 0;
-                        continue;
-                    }
-
                     if (zone != newZone)
                     {
                         actions[player.Id] = $"%player% moves into the {newZone.ToString().ToLower()}.";
@@ -214,6 +206,13 @@ namespace HungerGames.Game.Interactions
                 }
 
                 player.Stamina -= 10;
+
+                if (GetZone(player) == Zone.Border)
+                {
+                    actions[player.Id] = "%player% tries to escape the border.";
+                    player.Alive = false;
+                    player.Vitality = 0;
+                }
             }
 
             playerOrder = playerOrder.Where(p => p.Alive).ToArray();
@@ -273,7 +272,15 @@ namespace HungerGames.Game.Interactions
                             logged[player.Id] = true;
                             break;
                         case 1:
-                            happenings.Add(new SimulationLog(new List<Player> { player }, "%player% grabs an empty backpack."));
+                            string[] sText = new[]
+                            {
+                                "%player% grabs an empty backpack.",
+                                "%player% tries to snatch a backpack but is too slow.",
+                                "%player% is left empty-handed.",
+                                "%player% can not handle the chaos and stays still.",
+                                "%player% regrets %pronoun6% life choices."
+                            };
+                            happenings.Add(new SimulationLog(new List<Player> { player }, sText[random.Next(0, sText.Length)]));
                             logged[player.Id] = true;
                             break;
                         case 2:
@@ -281,7 +288,7 @@ namespace HungerGames.Game.Interactions
                             if (available.Length > 0)
                             {
                                 Player atk = available[random.Next(0, available.Length)];
-                                int atkType = random.Next(0, 3);
+                                int atkType = random.Next(0, 6);
                                 switch (atkType)
                                 {
                                     case 0:
@@ -295,6 +302,19 @@ namespace HungerGames.Game.Interactions
                                     case 2:
                                         atk.Vitality -= 10;
                                         happenings.Add(new SimulationLog(new List<Player> { player, atk }, "%player% pushes %victim% to the ground.", atk));
+                                        break;
+                                    case 3:
+                                        atk.Vitality -= 5;
+                                        happenings.Add(new SimulationLog(new List<Player> { player, atk },
+                                            "%player% scratches %victim% with %pronoun6% fingernails.", atk));
+                                        break;
+                                    case 4:
+                                        atk.Sanity -= 25;
+                                        happenings.Add(new SimulationLog(new List<Player> { player, atk }, "%player% violently screams at %victim%.", atk));
+                                        break;
+                                    case 5:
+                                        atk.Stamina -= 20;
+                                        happenings.Add(new SimulationLog(new List<Player> { player, atk }, "%player% drags %victim% back.", atk));
                                         break;
                                 }
 
@@ -363,7 +383,15 @@ namespace HungerGames.Game.Interactions
                                 {
                                     if (random.Next(0, 2) == 0)
                                     {
-                                        happenings.Add(new SimulationLog(new List<Player> { player }, "%player% has murder on %pronoun6% mind."));
+                                        string[] hateText = new[]
+                                        {
+                                            "%player% has murder on %pronoun6% mind.",
+                                            "%player% was treated poorly as a child.",
+                                            "%player% is sick in the head.",
+                                            "%player% screams into the void.",
+                                            "%player% lets out %pronoun6% rage on a tree.",
+                                        };
+                                        happenings.Add(new SimulationLog(new List<Player> { player }, hateText[random.Next(0, hateText.Length)]));
                                         logged[player.Id] = true;
                                     }
                                     else
@@ -398,7 +426,7 @@ namespace HungerGames.Game.Interactions
                                     }
                                     else
                                     {
-                                        int choice = random.Next(0, 5);
+                                        int choice = random.Next(0, 6);
 
                                         string name = string.Join(", ", targets.Select(t => t.Name).Take(targets.Count - 1));
                                         if (targets.Count > 1) name += $" and {targets.Last().Name}";
@@ -409,6 +437,12 @@ namespace HungerGames.Game.Interactions
                                         {
                                             name = targets.First().Name;
                                             s = "s";
+                                        }
+
+                                        string s2 = "is";
+                                        if (targets.Count == 1)
+                                        {
+                                            s2 = "are";
                                         }
 
                                         switch (choice)
@@ -425,10 +459,19 @@ namespace HungerGames.Game.Interactions
                                                     else
                                                     {
                                                         player.Attacked.Add(player1);
+                                                        player1.Attacked.Add(player);
                                                     }
                                                 }
 
-                                                happenings.Add(new SimulationLog(playerList, $"{name} get{s} ambushed by %player%."));
+                                                string s4 = s == "s" ? "tries" : "try";
+                                                string[] text0 = new[]
+                                                {
+                                                    $"{name} get{s} ambushed by %player%.",
+                                                    $"{name} get{s} hit by a trap set by %player%.",
+                                                    $"{name} can not escape %player%s attack.",
+                                                    $"{name} {s4} to take out %player% but %pronoun1% turns the tables.",
+                                                };
+                                                happenings.Add(new SimulationLog(playerList, text0[random.Next(0, text0.Length)]));
                                                 break;
                                             case 1:
                                                 foreach (var player1 in targets)
@@ -442,18 +485,33 @@ namespace HungerGames.Game.Interactions
                                                     else
                                                     {
                                                         player.Attacked.Add(player1);
+                                                        player1.Attacked.Add(player);
                                                     }
                                                 }
 
-                                                happenings.Add(new SimulationLog(playerList, $"{name} get{s} hurt running away from %player%."));
+                                                string[] text1 = new[]
+                                                {
+                                                    $"{name} get{s} hurt running away from %player%.",
+                                                    $"{name} barely escape{s} %player% and {s2} hurt in the process.",
+                                                    $"%player% scares {name} into falling out of a tree.",
+                                                    $"%player% surprises {name} while making a fire and they get burned.",
+                                                };
+                                                happenings.Add(new SimulationLog(playerList, text1[random.Next(0, text1.Length)]));
                                                 break;
                                             case 2:
                                                 foreach (var target in targets)
                                                 {
                                                     player.Attacked.Add(target);
+                                                    target.Attacked.Add(player);
                                                 }
 
-                                                happenings.Add(new SimulationLog(playerList, $"{name} get{s} attacked by %player% but manage to escape."));
+                                                string[] text2 = new[]
+                                                {
+                                                    $"{name} get{s} attacked by %player% but manage{s} to escape.",
+                                                    $"%player% chase%pronoun5% {name} but is unable to catch them.",
+                                                    $"{name} chase{s} after %player% but %pronoun1% escape%pronoun5%.",
+                                                };
+                                                happenings.Add(new SimulationLog(playerList, text2[random.Next(0, text2.Length)]));
                                                 break;
                                             case 3:
                                                 foreach (var player1 in playerList)
@@ -466,17 +524,40 @@ namespace HungerGames.Game.Interactions
                                                     }
                                                     else
                                                     {
+                                                        player1.Attacked.Add(player);
                                                         player.Attacked.Add(player1);
                                                     }
                                                 }
 
-                                                happenings.Add(new SimulationLog(playerList, $"{name} get{s} into a bloody fight with %player%."));
+                                                string[] text3 = new[]
+                                                {
+                                                    $"{name} get{s} into a bloody fight with %player%.",
+                                                    $"%player% attacks {name}. They fight back.",
+                                                    $" %player% ambushes {name} but {s2} able to fight back.",
+                                                    $"{name} attack{s} %player% but also get{s} hurt."
+                                                };
+                                                happenings.Add(new SimulationLog(playerList, text3[random.Next(0, text3.Length)]));
                                                 break;
                                             case 4:
                                                 player.Vitality = 0;
                                                 player.Alive = false;
-                                                happenings.Add(new SimulationLog(playerList,
-                                                    $"{name} get{s} attacked by %player% but kill{s} %pronoun2% instead."));
+                                                string[] text4 = new[]
+                                                {
+                                                    $"{name} get{s} attacked by %player% but kill{s} %pronoun2% instead.",
+                                                    $"{name} hunt{s} down %player%.",
+                                                    $"{name} surprise{s} %player% while %pronoun1% %pronoun3% sleeping.",
+                                                };
+                                                happenings.Add(new SimulationLog(playerList, text4[random.Next(0, text4.Length)]));
+                                                break;
+                                            case 5:
+                                                string s3 = s == "s" ? "es" : "";
+                                                string[] text5 = new[]
+                                                {
+                                                    $"%player% beats {name} in a fight but spares them.",
+                                                    $"{name} catch{s3} %player% off guard but decide not to hurt %pronoun1%.",
+                                                    $"{name} find{s} %player% but dont see %pronoun1% as a threat.",
+                                                };
+                                                happenings.Add(new SimulationLog(playerList, text5[random.Next(0, text5.Length)]));
                                                 break;
                                         }
                                     }
@@ -490,7 +571,15 @@ namespace HungerGames.Game.Interactions
                                 {
                                     if (random.Next(0, 2) == 0)
                                     {
-                                        happenings.Add(new SimulationLog(new List<Player> { player }, "%player% is lonely."));
+                                        string[] affText = new[]
+                                        {
+                                            "%player% is lonely.",
+                                            "%player% yearns for affection.",
+                                            "%player% misses home.",
+                                            "%player% cries.",
+                                            "%player% has no friends.",
+                                        };
+                                        happenings.Add(new SimulationLog(new List<Player> { player }, affText[random.Next(0, affText.Length)]));
                                         logged[player.Id] = true;
                                     }
                                     else
@@ -537,30 +626,61 @@ namespace HungerGames.Game.Interactions
                                                 {
                                                     player1.Sanity += 15;
                                                     player.Helped.Add(player1);
+                                                    player1.Helped.Add(player);
                                                 }
 
-                                                happenings.Add(new SimulationLog(playerList, $"{name} sleep in shifts."));
+                                                string[] text0 = new[]
+                                                {
+                                                    $"{name} sleep in shifts.",
+                                                    $"{name} heap each other climb a tree.",
+                                                    $"{name} share information.",
+                                                    $"{name} set up camp together.",
+                                                };
+                                                happenings.Add(new SimulationLog(playerList, text0[random.Next(0, text0.Length)]));
                                                 break;
                                             case 1:
                                                 foreach (var player1 in playerList)
                                                 {
                                                     player1.Sanity += 5;
                                                     player.Helped.Add(player1);
+                                                    player1.Helped.Add(player);
                                                 }
 
-                                                happenings.Add(new SimulationLog(playerList, $"{name} talk about the other tributes."));
+                                                string[] text1 = new[]
+                                                {
+                                                    $"{name} play poker.",
+                                                    $"{name} greet each other.",
+                                                    $"{name} look up at the stars.",
+                                                    $"{name} wonder when the games will end.",
+                                                };
+                                                happenings.Add(new SimulationLog(playerList, text1[random.Next(0, text1.Length)]));
                                                 break;
                                             case 2:
-                                                happenings.Add(new SimulationLog(playerList, $"{name} can't seem to get along."));
+
+                                                string[] text2 = new[]
+                                                {
+                                                    $"{name} can't seem to get along.",
+                                                    $"{name} decide to part ways.",
+                                                    $"{name} have an argument about politics.",
+                                                    $"{name} have different music tastes.",
+                                                };
+                                                happenings.Add(new SimulationLog(playerList, text2[random.Next(0, text2.Length)]));
                                                 break;
                                             case 3:
                                                 foreach (var player1 in playerList)
                                                 {
                                                     player1.Stamina += 15;
                                                     player.Helped.Add(player1);
+                                                    player1.Helped.Add(player);
                                                 }
 
-                                                happenings.Add(new SimulationLog(playerList, $"{name} take turns resting."));
+                                                string[] text3 = new[]
+                                                {
+                                                    $"{name} take turns resting.",
+                                                    $"{name} carry each others bags.",
+                                                    $"{name} take some time to recover.",
+                                                };
+                                                happenings.Add(new SimulationLog(playerList, text3[random.Next(0, text3.Length)]));
                                                 break;
                                             case 4:
                                                 happenings.Add(new SimulationLog(playerList, $"{name} hunt for other tributes."));
@@ -597,33 +717,128 @@ namespace HungerGames.Game.Interactions
                                     logged[player.Id] = true;
                                     break;
                                 case Zone.Forest:
-                                    string start = "%player% gets attacked by a bear.";
-                                    player.Vitality -= 25;
-                                    if (player.Vitality <= 0)
+                                    int fh = random.Next(0, 3);
+                                    switch (fh)
                                     {
-                                        player.Alive = false;
-                                        start += " %pronoun1% bleed out from the wounds.";
+                                        case 0:
+                                            string start = "%player% gets attacked by a bear.";
+                                            player.Vitality -= 50;
+                                            if (player.Vitality <= 0)
+                                            {
+                                                player.Alive = false;
+                                                start += " %pronoun1% bleed out from the wounds.";
+                                            }
+
+                                            happenings.Add(new SimulationLog(new List<Player> { player }, start));
+                                            logged[player.Id] = true;
+                                            break;
+
+                                        case 1:
+                                            player.Sanity += 5;
+                                            happenings.Add(new SimulationLog(new List<Player> { player }, "%player% listens to the sounds of the forest."));
+                                            logged[player.Id] = true;
+                                            break;
+
+                                        case 2:
+                                            player.Stamina += 10;
+                                            happenings.Add(new SimulationLog(new List<Player> { player }, "%player% rests under a tree."));
+                                            logged[player.Id] = true;
+                                            break;
                                     }
 
-                                    happenings.Add(new SimulationLog(new List<Player> { player }, start));
-                                    logged[player.Id] = true;
                                     break;
                                 case Zone.Mountains:
-                                    player.Vitality = 0;
-                                    player.Alive = false;
-                                    happenings.Add(new SimulationLog(new List<Player> { player }, "%player% falls off a cliff and dies."));
-                                    logged[player.Id] = true;
+                                    int fm = random.Next(0, 3);
+                                    switch (fm)
+                                    {
+                                        case 0:
+                                            player.Sanity += 10;
+                                            happenings.Add(new SimulationLog(new List<Player> { player }, "%player% watches the sun rise."));
+                                            logged[player.Id] = true;
+                                            break;
+                                        case 1:
+                                            player.Vitality = 0;
+                                            player.Alive = false;
+                                            happenings.Add(new SimulationLog(new List<Player> { player }, "%player% falls off a cliff and dies."));
+                                            logged[player.Id] = true;
+                                            break;
+
+                                        case 2:
+                                            string start = "%player% suffers from the cold weather.";
+                                            player.Vitality -= 15;
+                                            player.Stamina -= 25;
+                                            if (player.Stamina < 0) player.Stamina = 0;
+                                            if (player.Vitality <= 0)
+                                            {
+                                                player.Alive = false;
+                                                start += " %pronoun1% freeze to death.";
+                                            }
+
+                                            happenings.Add(new SimulationLog(new List<Player> { player }, start));
+                                            logged[player.Id] = true;
+                                            break;
+                                    }
+
                                     break;
                                 case Zone.Desert:
-                                    player.Sanity -= 20;
-                                    happenings.Add(new SimulationLog(new List<Player> { player }, "%player% walk under the scorching sun."));
-                                    logged[player.Id] = true;
+                                    int dm = random.Next(0, 3);
+                                    switch (dm)
+                                    {
+                                        case 0:
+                                            player.Sanity -= 20;
+                                            happenings.Add(new SimulationLog(new List<Player> { player }, "%player% walks under the scorching sun."));
+                                            logged[player.Id] = true;
+                                            break;
+                                        case 1:
+                                            string start = "%player% get pricked by a cactus.";
+                                            player.Vitality -= 5;
+                                            if (player.Vitality <= 0)
+                                            {
+                                                player.Alive = false;
+                                                start += " %pronoun1% instantly die%pronoun5% from shock.";
+                                            }
+
+                                            happenings.Add(new SimulationLog(new List<Player> { player }, start));
+                                            logged[player.Id] = true;
+                                            break;
+                                        case 2:
+                                            player.Sanity += 5;
+                                            player.Stamina += 10;
+                                            happenings.Add(new SimulationLog(new List<Player> { player }, "%player% drinks from an oasis."));
+                                            logged[player.Id] = true;
+                                            break;
+                                    }
+
                                     break;
                                 case Zone.Swamp:
-                                    player.Stamina -= 20;
-                                    if (player.Stamina <= 0) player.Stamina = 0;
-                                    happenings.Add(new SimulationLog(new List<Player> { player }, "%player% gets stuck in the mud."));
-                                    logged[player.Id] = true;
+                                    int sm = random.Next(0, 3);
+                                    switch (sm)
+                                    {
+                                        case 0:
+                                            player.Stamina -= 20;
+                                            if (player.Stamina <= 0) player.Stamina = 0;
+                                            happenings.Add(new SimulationLog(new List<Player> { player }, "%player% gets stuck in the mud."));
+                                            logged[player.Id] = true;
+                                            break;
+                                        case 1:
+                                            player.Sanity += 15;
+                                            happenings.Add(new SimulationLog(new List<Player> { player }, "%player% thinks things can't get any worse."));
+                                            logged[player.Id] = true;
+                                            break;
+                                        case 2:
+                                            string start = "%player% is bitten by a snake.";
+                                            player.Vitality -= 30;
+                                            if (player.Vitality <= 0)
+                                            {
+                                                player.Alive = false;
+                                                start += " %pronoun1% die%pronoun5% from the snakes venom.";
+                                            }
+
+                                            happenings.Add(new SimulationLog(new List<Player> { player }, start));
+                                            logged[player.Id] = true;
+                                            break;
+                                    }
+
                                     break;
                             }
 
