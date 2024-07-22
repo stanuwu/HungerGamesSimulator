@@ -423,6 +423,24 @@ public partial class MainWindow : Window
             };
             player.Children.Add(image);
 
+            Label kills = new Label()
+            {
+                Name = $"Summary{i}Kills",
+                FontSize = 18,
+                Foreground = Brushes.White,
+                VerticalAlignment = VerticalAlignment.Top,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Content = $"{players[i - 1].Killed.Count} Kills",
+                Margin = new Thickness()
+                {
+                    Left = 0,
+                    Top = 180,
+                    Right = 0,
+                    Bottom = 0,
+                },
+            };
+            player.Children.Add(kills);
+
             bool isAlive = players[i - 1].Alive;
             if (GameManager.Instance.DisplayStats == DisplayStats.None)
             {
@@ -437,7 +455,7 @@ public partial class MainWindow : Window
                     Margin = new Thickness()
                     {
                         Left = 0,
-                        Top = 180,
+                        Top = 200,
                         Right = 0,
                         Bottom = 0,
                     },
@@ -458,7 +476,7 @@ public partial class MainWindow : Window
                     Margin = new Thickness()
                     {
                         Left = 0,
-                        Top = 180,
+                        Top = 200,
                         Right = 0,
                         Bottom = 0,
                     },
@@ -476,7 +494,7 @@ public partial class MainWindow : Window
                     Margin = new Thickness()
                     {
                         Left = 0,
-                        Top = 200,
+                        Top = 220,
                         Right = 0,
                         Bottom = 0,
                     },
@@ -494,7 +512,7 @@ public partial class MainWindow : Window
                     Margin = new Thickness()
                     {
                         Left = 0,
-                        Top = 220,
+                        Top = 240,
                         Right = 0,
                         Bottom = 0,
                     },
@@ -512,7 +530,7 @@ public partial class MainWindow : Window
                     Margin = new Thickness()
                     {
                         Left = 0,
-                        Top = 240,
+                        Top = 260,
                         Right = 0,
                         Bottom = 0,
                     },
@@ -533,7 +551,7 @@ public partial class MainWindow : Window
                     Margin = new Thickness()
                     {
                         Left = 0,
-                        Top = 260,
+                        Top = 280,
                         Right = 0,
                         Bottom = 0,
                     },
@@ -551,7 +569,7 @@ public partial class MainWindow : Window
                     Margin = new Thickness()
                     {
                         Left = 0,
-                        Top = 280,
+                        Top = 300,
                         Right = 0,
                         Bottom = 0,
                     },
@@ -569,7 +587,7 @@ public partial class MainWindow : Window
                     Margin = new Thickness()
                     {
                         Left = 0,
-                        Top = 300,
+                        Top = 320,
                         Right = 0,
                         Bottom = 0,
                     },
@@ -587,7 +605,7 @@ public partial class MainWindow : Window
                     Margin = new Thickness()
                     {
                         Left = 0,
-                        Top = 320,
+                        Top = 340,
                         Right = 0,
                         Bottom = 0,
                     },
@@ -605,7 +623,7 @@ public partial class MainWindow : Window
                     Margin = new Thickness()
                     {
                         Left = 0,
-                        Top = 340,
+                        Top = 360,
                         Right = 0,
                         Bottom = 0,
                     },
@@ -621,13 +639,13 @@ public partial class MainWindow : Window
                 switch (GameManager.Instance.DisplayStats)
                 {
                     case DisplayStats.All:
-                        cursorY += 370;
+                        cursorY += 390;
                         break;
                     case DisplayStats.Basic:
-                        cursorY += 270;
+                        cursorY += 290;
                         break;
                     case DisplayStats.None:
-                        cursorY += 200;
+                        cursorY += 220;
                         break;
                 }
             }

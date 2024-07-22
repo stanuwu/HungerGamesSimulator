@@ -529,6 +529,14 @@ namespace HungerGames.Game.Interactions
                                                     }
                                                 }
 
+                                                if (player.Vitality <= 0)
+                                                {
+                                                    foreach (var target in targets)
+                                                    {
+                                                        target.Killed.Add(player);
+                                                    }
+                                                }
+
                                                 string[] text3 = new[]
                                                 {
                                                     $"{name} get{s} into a bloody fight with %player%.",
@@ -541,6 +549,11 @@ namespace HungerGames.Game.Interactions
                                             case 4:
                                                 player.Vitality = 0;
                                                 player.Alive = false;
+                                                foreach (var player1 in targets)
+                                                {
+                                                    player1.Killed.Add(player);
+                                                }
+
                                                 string[] text4 = new[]
                                                 {
                                                     $"{name} get{s} attacked by %player% but kill{s} %pronoun2% instead.",
